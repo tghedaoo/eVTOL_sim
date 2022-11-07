@@ -14,14 +14,22 @@ namespace eVTOL_sim
 
     void StateMachine::flight_st()
     {
+      current_state_ = AircraftState::flight;
     }
 
     void StateMachine::awaiting_charger_st()
     {
+      current_state_ = AircraftState::awaiting_charger;
     }
 
     void StateMachine::charging_st()
     {
+      current_state_ = AircraftState::charging;
+    }
+
+    void StateMachine::stop_st()
+    {
+      current_state_ = AircraftState::stop;
     }
 
     void StateMachine::state_control()
@@ -31,15 +39,16 @@ namespace eVTOL_sim
       {
         // State Machine Flow.
       }
-
-      // Stop State Work.
-
+      // Stop operation.
+      stop_st();
     }
     
     void StateMachine::stop_state_machine()
     {
       stop_state_machine_ = true;
     }
+
+    
 
   } // namespace state_machine
 } // namespace eVTOL_sim

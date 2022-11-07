@@ -4,6 +4,8 @@ Aircraft Class Implementation.
 
 #include "../includes/aircraft.h"
 
+#include <iostream>
+
 namespace eVTOL_sim
 {
   namespace aircraft
@@ -23,10 +25,9 @@ namespace eVTOL_sim
       state_machine_obj_ = state_machine_obj;
     }
 
-    bool Aircraft::start_sim()
+    void Aircraft::start_sim()
     { 
-      // Start the state machine thread.
-      return true;
+      state_machine_thread_ = std::thread(&state_machine::StateMachine::state_control, &state_machine_obj_);
     }
 
     void Aircraft::stop_sim()
@@ -41,9 +42,18 @@ namespace eVTOL_sim
 
     SimRes Aircraft::sim_results()
     {
+      // Just to let the corresponding thread complete stop state calculations.
+      std::this_thread::sleep_for (std::chrono::milliseconds(100));
+      
+      // Check if state machine thread ended already, if not close it now.
+      if (state_machine_thread_.joinable())
+      {
+        state_machine_thread_.join();
+      }
+      
+      // Get all results. 
       SimRes results = {0};
-      // Check Stop.
-      // Get all results 
+      // Do the calculations here. 
       return results;
     }
   } // namespace aircraft

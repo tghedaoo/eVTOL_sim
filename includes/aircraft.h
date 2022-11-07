@@ -7,7 +7,6 @@ Calculates simulations results.
 
 #include "state_machine.h"
 
-#include <cstdint>
 #include <string>
 
 #pragma once
@@ -66,8 +65,7 @@ namespace eVTOL_sim
       void init_aircraft(AircraftParams &params, AircraftType type, state_machine::StateMachine& state_machine_obj);
 
       /// @brief Start aircraft i.e. start the state machine.
-      /// @return true if started.
-      bool start_sim();
+      void start_sim();
 
       /// @brief Stop aircraft i.e. stop the state machine.
       void stop_sim();
@@ -81,9 +79,10 @@ namespace eVTOL_sim
       SimRes sim_results();
 
     private:
-      AircraftParams aircraft_parameters_;           /// Current Aircraft Parameters.
-      AircraftType aircraft_type_;                   /// Current Aircraft Type.
+      AircraftParams aircraft_parameters_;            /// Current Aircraft Parameters.
+      AircraftType aircraft_type_;                    /// Current Aircraft Type.
       state_machine::StateMachine state_machine_obj_; /// State Machine governing the current aircraft.
+      std::thread state_machine_thread_;              /// State Machine Thread.
     };
 
   } // namespace aircraft

@@ -2,8 +2,8 @@
 # Contains calls for simulator and unit tests.
 
 CXX      := -g++
-CXXFLAGS := -Wall -std=c++11
-LDFLAGS  := -L/usr/lib -lstdc++ -lm
+CXXFLAGS := -g -Wall -std=c++11
+LDFLAGS  := -L/usr/lib -lstdc++ -lm -pthread
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
 APP_DIR  := $(BUILD)/apps

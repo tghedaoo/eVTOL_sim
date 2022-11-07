@@ -4,6 +4,8 @@ Tracks and Switches the state of the aircraft - flight, waiting, charging.
 */
 
 #include <cstdint>
+#include <chrono>
+#include <thread>
 
 #pragma once
 
@@ -31,14 +33,15 @@ namespace eVTOL_sim
       void awaiting_charger_st();
       /// @brief Charging State.
       void charging_st();
+      /// @brief Stop State.
+      void stop_st();
       
       /// @brief Aircraft State Control.
       void state_control();
 
       /// @brief Command Stop.
       void stop_state_machine();
-      /// @brief Stop State.
-      void stop_st();
+      
 
     private:
       AircraftState current_state_;

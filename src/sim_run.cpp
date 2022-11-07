@@ -45,12 +45,9 @@ int main()
   
   // Begin Simulator.
   std::cout << "eVTOL sim: Simualtion Beginning ... " << std::endl;
-  if(!aircraft1.start_sim())
-  {
-    std::cout << "Sim Start for one of the aircrafts failed." << std::endl;
-    return EXIT_FAILURE;
-  }
+  aircraft1.start_sim();
 
+  std::this_thread::sleep_for (std::chrono::seconds(3));
   // Stop sim after 3 minutes.
   aircraft1.stop_sim();
   std::cout << "eVTOL sim: Simulation COMPLETE." << std::endl;
