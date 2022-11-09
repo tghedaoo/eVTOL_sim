@@ -48,7 +48,7 @@ namespace eVTOL_sim
       uint16_t avg_flight_time_minutes;
       uint16_t avg_time_charging_minutes;
       uint16_t avg_time_waiting_minutes;
-      uint16_t max_numb_faults;
+      float max_numb_faults;
       uint16_t passenger_miles;
     };
 

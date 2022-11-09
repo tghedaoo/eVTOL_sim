@@ -86,7 +86,9 @@ int main()
   for (int iter = 0; iter < 5; iter++)
   {
     max_flight_time_per_charge_minutes.push_back(calculate_max_flight_time_per_charge(param_list[iter]));
+    std::cout << max_flight_time_per_charge_minutes[iter] << " ";
   }
+  std::cout << "<-- Aircraft max flight times." << std::endl;
 
   // Random number generator
   auto aircraft_count = random_number_of_aircrafts(20);
@@ -94,7 +96,7 @@ int main()
   {
     std::cout << value << " ";
   }
-  std::cout << "<-- Aircraft counts" << std::endl;
+  std::cout << "<-- Aircraft counts." << std::endl;
 
   // Get 20 vehicles (of 5 types in random numbers)
   // Only one aircraft deployed for now.

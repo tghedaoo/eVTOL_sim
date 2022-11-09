@@ -56,8 +56,17 @@ namespace eVTOL_sim
       }
 
       // Get all results.
-      SimRes results = {0};
-      // Do the calculations here.
+      SimRes results = {0};  
+      auto time_res = state_machine_obj_.get_time_track_results();
+      
+      // Timings.
+      results.avg_flight_time_minutes = time_res.total_flight_time_minutes;
+      results.avg_time_charging_minutes = time_res.total_charging_time_minutes;
+      results.avg_time_waiting_minutes = time_res.total_wait_time_minutes;
+      // Analysis.
+      results.max_numb_faults = (time_res.total_flight_time_minutes * (float)aircraft_parameters_.fault_probability) / (60 * 100);
+      results.passenger_miles = ((float)time_res.total_flight_time_minutes / 60) * aircraft_parameters_.cruise_speed * aircraft_parameters_.passenger_count;
+
       return results;
     }
   } // namespace aircraft
