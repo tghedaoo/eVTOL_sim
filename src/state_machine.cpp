@@ -8,18 +8,21 @@ namespace eVTOL_sim
 {
   namespace state_machine
   {
-    StateMachine::StateMachine() : current_state_(AircraftState::flight), stop_state_machine_(false)
+    // Initializing state tio flight as per the problem statement.
+    StateMachine::StateMachine() : current_state_(AircraftState::flight), stop_state_machine_(false), time_track_({0})
     {
     }
 
     void StateMachine::flight_st()
     {
       current_state_ = AircraftState::flight;
+
     }
 
     void StateMachine::awaiting_charger_st()
     {
       current_state_ = AircraftState::awaiting_charger;
+
     }
 
     void StateMachine::charging_st()
@@ -29,7 +32,7 @@ namespace eVTOL_sim
 
     void StateMachine::stop_st()
     {
-      current_state_ = AircraftState::stop;
+      // check current state and complete time tracking.
     }
 
     void StateMachine::state_control()
@@ -48,7 +51,10 @@ namespace eVTOL_sim
       stop_state_machine_ = true;
     }
 
-    
+    StateMachineTimeTrack StateMachine::get_time_track_results()
+    {
+      return time_track_;
+    }  
 
   } // namespace state_machine
 } // namespace eVTOL_sim

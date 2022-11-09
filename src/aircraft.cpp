@@ -10,7 +10,10 @@ namespace eVTOL_sim
 {
   namespace aircraft
   {
-    void Aircraft::init_aircraft(AircraftParams& params, AircraftType type, state_machine::StateMachine& state_machine_obj)
+    void Aircraft::init_aircraft(AircraftParams &params,
+                                 AircraftType type, 
+                                 state_machine::StateMachine &state_machine_obj,
+                                 uint16_t max_time_per_flight_minutes)
     {
       // Initialize all aircraft parameters.
       aircraft_parameters_.cruise_speed = params.cruise_speed;
@@ -23,10 +26,11 @@ namespace eVTOL_sim
       aircraft_type_ = type;
       // State Machine.
       state_machine_obj_ = state_machine_obj;
+      state_machine_obj_.max_time_per_flight_minutes_ = max_time_per_flight_minutes;
     }
 
     void Aircraft::start_sim()
-    { 
+    {
       state_machine_thread_ = std::thread(&state_machine::StateMachine::state_control, &state_machine_obj_);
     }
 
@@ -43,17 +47,17 @@ namespace eVTOL_sim
     SimRes Aircraft::sim_results()
     {
       // Just to let the corresponding thread complete stop state calculations.
-      std::this_thread::sleep_for (std::chrono::milliseconds(100));
-      
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
       // Check if state machine thread ended already, if not close it now.
       if (state_machine_thread_.joinable())
       {
         state_machine_thread_.join();
       }
-      
-      // Get all results. 
+
+      // Get all results.
       SimRes results = {0};
-      // Do the calculations here. 
+      // Do the calculations here.
       return results;
     }
   } // namespace aircraft

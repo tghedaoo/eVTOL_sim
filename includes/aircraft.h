@@ -62,7 +62,11 @@ namespace eVTOL_sim
       /// @param params Parameters for this specific aircraft.
       /// @param type aircraft type as in company of origin.
       /// @param state_machine_obj state machine governing the aircraft.
-      void init_aircraft(AircraftParams &params, AircraftType type, state_machine::StateMachine& state_machine_obj);
+      /// @param max_time_per_flight_minutes maximum time an aircraft can fly on one charge.
+      void init_aircraft(AircraftParams &params,
+                         AircraftType type,
+                         state_machine::StateMachine &state_machine_obj,
+                         uint16_t max_time_per_flight_minutes);
 
       /// @brief Start aircraft i.e. start the state machine.
       void start_sim();
