@@ -50,8 +50,8 @@ std::vector<int> random_number_of_aircrafts(int num_aircrafts)
   std::vector<int> num_aircrafts_per_type;
 
   // Providing a seed value
-	srand((unsigned) time(NULL));
-  
+  srand((unsigned)time(NULL));
+
   int range = 0, current_type_numbers = 0;
 
   // Since there are 5 types, the worst case would be 1 each of 4 types and rest of 1 type.
@@ -93,36 +93,88 @@ int main()
   std::cout << "<-- Aircraft counts." << std::endl;
 
   // Get 20 vehicles (of 5 types in random numbers)
-  // Only one aircraft deployed for now.
-  eVTOL_sim::aircraft::Aircraft aircraft1;
+  // TODO: Create an infra to spawn as per random number of aircrafts.
+
   eVTOL_sim::state_machine::StateMachine state_machine1;
-  aircraft1.init_aircraft(param_list[0], eVTOL_sim::aircraft::AircraftType::Alpha, state_machine1, max_flight_time_per_charge_minutes[0]);
+  eVTOL_sim::aircraft::Aircraft aircraft1;
+
+  aircraft1.init_aircraft(param_list[0],
+                          eVTOL_sim::aircraft::AircraftType::Alpha,
+                          state_machine1,
+                          max_flight_time_per_charge_minutes[0]);
+
+  eVTOL_sim::state_machine::StateMachine state_machine2;
+  eVTOL_sim::aircraft::Aircraft aircraft2;
+  aircraft2.init_aircraft(param_list[1],
+                          eVTOL_sim::aircraft::AircraftType::Beta,
+                          state_machine2,
+                          max_flight_time_per_charge_minutes[1]);
+
+  eVTOL_sim::state_machine::StateMachine state_machine3;
+  eVTOL_sim::aircraft::Aircraft aircraft3;
+  aircraft3.init_aircraft(param_list[2],
+                          eVTOL_sim::aircraft::AircraftType::Charlie,
+                          state_machine3,
+                          max_flight_time_per_charge_minutes[2]);
+
+  eVTOL_sim::state_machine::StateMachine state_machine4;
+  eVTOL_sim::aircraft::Aircraft aircraft4;
+  aircraft4.init_aircraft(param_list[3],
+                          eVTOL_sim::aircraft::AircraftType::Delta,
+                          state_machine4,
+                          max_flight_time_per_charge_minutes[3]);
+
+  eVTOL_sim::state_machine::StateMachine state_machine5;
+  eVTOL_sim::aircraft::Aircraft aircraft5;
+  aircraft5.init_aircraft(param_list[4],
+                          eVTOL_sim::aircraft::AircraftType::Echo,
+                          state_machine5,
+                          max_flight_time_per_charge_minutes[4]);
+
   std::cout << "eVTOL sim: Initialization COMPLETE." << std::endl;
 
   // Begin Simulator.
   std::cout << "eVTOL sim: Simualtion Beginning ... " << std::endl;
-  // Spawn 20 aircrafts.
+  // TODO: Spawn 20 aircrafts.
   aircraft1.start_sim();
+  aircraft2.start_sim();
+  aircraft3.start_sim();
+  aircraft4.start_sim();
+  aircraft5.start_sim();
 
-  // Start simulator time tracking. 
+  // Start simulator time tracking.
   // 180 sec - 3 minutes ~ 3 hours of simulation.
   // TODO: Explore timer interrupt setup to avoid busy wait.
   // TODO: timing cleanups.
   // 0.1 sec extra to let the states close and to accomdate roundups as the times are represented in uint16_t)
-  std::clock_t start; 
+  std::clock_t start;
   start = std::clock();
-  double sim_end_duration = 180.1;  
-  while(((std::clock() - start) / (double) CLOCKS_PER_SEC) < sim_end_duration); 
+  double sim_end_duration = 180.1;
+  while (((std::clock() - start) / (double)CLOCKS_PER_SEC) < sim_end_duration)
+    ;
 
   // Stop sim after 3 minutes.
+  // TODO: Stop 20 spawned aircrafts.
   aircraft1.stop_sim();
+  aircraft2.stop_sim();
+  aircraft3.stop_sim();
+  aircraft4.stop_sim();
+  aircraft5.stop_sim();
+
   std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Just to let the all threads complete.
   std::cout << "eVTOL sim: Simulation COMPLETE." << std::endl;
 
   // Get all calculations.
   std::cout << "eVTOL sim: Calculations Beginning ... " << std::endl;
   std::vector<eVTOL_sim::aircraft::SimRes> results;
+
+  // TODO: Get 20 aircraft results.
   results.push_back(aircraft1.sim_results());
+  results.push_back(aircraft2.sim_results());
+  results.push_back(aircraft3.sim_results());
+  results.push_back(aircraft4.sim_results());
+  results.push_back(aircraft5.sim_results());
+
   std::cout << "eVTOL sim: Calculations COMPLETE." << std::endl;
 
   std::cout << "------------------" << std::endl;
@@ -132,7 +184,7 @@ int main()
   for (uint8_t iter = 0; iter < results.size(); iter++)
   {
     std::cout << "Aircraft id [" << std::to_string(iter) << "]" << std::endl;
-    std::cout << "Aircraft company [" << eVTOL_sim::aircraft::AircraftTypeEnums[(uint8_t)aircraft1.get_type()] << "]" << std::endl;
+    // std::cout << "Aircraft company [" << eVTOL_sim::aircraft::AircraftTypeEnums[(uint8_t)aircraft[iter].get_type()] << "]" << std::endl;
 
     std::cout << "avg_flight_time_minutes = " << results[iter].avg_flight_time_minutes << std::endl;
     std::cout << "avg_time_charging_minutes = " << results[iter].avg_time_charging_minutes << std::endl;

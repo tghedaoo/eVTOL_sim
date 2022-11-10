@@ -97,6 +97,7 @@ namespace eVTOL_sim
       }
 
       // Release the charger.
+      // TODO: Log which charging station is freed and by whom.
       obtained_charger_->unlock();
 
       // Update total time of charging since beginning.
@@ -146,6 +147,7 @@ namespace eVTOL_sim
 
     bool StateMachine::check_charger_availability()
     {
+      // TODO: Log who is using the charging station.
       if (charging_station_1.try_lock())
       {
         std::cout << "charger 1" << std::endl;
