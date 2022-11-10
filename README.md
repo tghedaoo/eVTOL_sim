@@ -1,5 +1,5 @@
 # eVTOL simulator
-** TODO **
+The simulator application simulates a scenario where 20 aircrafts of 5 different types start together and based on their battery and flight characteristics engage with 3 available charging stations are charging. The simulator runs for 3 minutes equivalent to 3 hours of simulation. The simulator provides an analysis into flight, charging, and waiting times and further statistics on faults and passenger miles.
 
 ## Build Instructions
 In the eVTOL_sim directory ...\
@@ -9,11 +9,12 @@ or\
 To build the simulator and the necessary classes and dependencies.
 
 ## Run Instructions
-To run the simulator, run the following\
+To run the simulator, run the following after building\
 `./eVTOL_sim_run.sh`
 
 ## Software Architecture
-** TODO **
+The simulator heavily relies on the aircraft class which inturn relies on the state machine logic. The simulator setups the flow of the simulation. The aircraft class intiatizes the aircraft parameters and its state. Its also, responsible to start and stop the state machine. The state machine class houses the flight and charging logic as per the given situation. More details in the following sub-section.
+A util class is needed to encapsulate simulator calculations and config handling.
 
 ### Aircraft State Machine
 This is a very basic state machine for tracking the aircraft events. The assumption provided was that the aircraft has full charge and flies with the start of the simulation. So each aircraft would fly until the charge goes down completely (determined by max range at full charge). The aircraft then faces a decision whether to charge or wait depending upon charger availability. If it gets a charger, it charges and flies after getting fully charged, else it waits for the charger.
@@ -29,7 +30,7 @@ flowchart TD;
 ## Simulation Flow
 ```mermaid
 flowchart TD;
-    A[generate 20 aircrafts]-->B[spwan 20 aircraft state machines];
+    A[generate 20 aircrafts]-->B[spawn 20 aircraft state machines];
     B-- time and charger utilization tracking -->C[stop simulation];
     C-->D[aircraft end of simulation analysis]
 ```
