@@ -1,15 +1,14 @@
 /*
 Aircraft Class
+----------------
 Contains technical specifications - cruise speed, battery capacity, time to charge, energy use at cruise, passenger count, fault probability.
-Runs State machine class object to track the state of the aircraft - flight, waiting, charging.
+Spawns State machine thread to track the state of the aircraft - flight, waiting, charging.
 Calculates simulations results.
 */
+#pragma once
 
 #include "state_machine.h"
-
 #include <string>
-
-#pragma once
 
 namespace eVTOL_sim
 {

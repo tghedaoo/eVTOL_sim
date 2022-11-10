@@ -11,7 +11,6 @@ The aircraft uses a state machine to track its states and timings.
 #include "../includes/state_machine.h"
 #include "../includes/aircraft.h"
 
-#include <iostream>
 #include <vector>
 #include <cstdlib>
 
@@ -88,7 +87,7 @@ int main()
     max_flight_time_per_charge_minutes.push_back(calculate_max_flight_time_per_charge(param_list[iter]));
     std::cout << max_flight_time_per_charge_minutes[iter] << " ";
   }
-  std::cout << "<-- Aircraft max flight times." << std::endl;
+  std::cout << "<-- Aircraft max flight times in minutes." << std::endl;
 
   // Random number generator
   auto aircraft_count = random_number_of_aircrafts(20);
@@ -107,11 +106,22 @@ int main()
 
   // Begin Simulator.
   std::cout << "eVTOL sim: Simualtion Beginning ... " << std::endl;
+  // Spawn 20 aircrafts.
   aircraft1.start_sim();
 
-  std::this_thread::sleep_for(std::chrono::seconds(3));
+  // Start simulator time tracking. 
+  // 180 sec - 3 minutes ~ 3 hours of simulation.
+  // TODO: Explore timer interrupt setup to avoid busy wait.
+  // TODO: timing cleanups.
+  // 0.1 sec extra to let the states close and to accomdate roundups as the times are represented in uint16_t)
+  std::clock_t start; 
+  start = std::clock();
+  double sim_end_duration = 180.1;  
+  while(((std::clock() - start) / (double) CLOCKS_PER_SEC) < sim_end_duration); 
+
   // Stop sim after 3 minutes.
   aircraft1.stop_sim();
+  std::this_thread::sleep_for(std::chrono::milliseconds(500)); // Just to let the all threads complete.
   std::cout << "eVTOL sim: Simulation COMPLETE." << std::endl;
 
   // Get all calculations.

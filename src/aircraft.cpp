@@ -26,7 +26,8 @@ namespace eVTOL_sim
       aircraft_type_ = type;
       // State Machine.
       state_machine_obj_ = state_machine_obj;
-      state_machine_obj_.max_time_per_flight_minutes_ = max_time_per_flight_minutes;
+      state_machine_obj_.time_per_flight_minutes = max_time_per_flight_minutes;
+      state_machine_obj_.time_to_charge_minutes = params.time_2_charge_minutes;
     }
 
     void Aircraft::start_sim()
@@ -46,9 +47,6 @@ namespace eVTOL_sim
 
     SimRes Aircraft::sim_results()
     {
-      // Just to let the corresponding thread complete stop state calculations.
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
       // Check if state machine thread ended already, if not close it now.
       if (state_machine_thread_.joinable())
       {

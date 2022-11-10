@@ -1,14 +1,16 @@
 /*
-State Machine Class Header.
+State Machine Class.
+----------------
 Tracks and Switches the state of the aircraft - flight, waiting, charging.
 */
+#pragma once
 
+#include <iostream>
 #include <cstdint>
 #include <chrono>
+#include <ctime>
 #include <thread>
 #include <mutex>
-
-#pragma once
 
 namespace eVTOL_sim
 {
@@ -19,6 +21,12 @@ namespace eVTOL_sim
       flight = 0,
       awaiting_charger,
       charging,
+    };
+
+    struct StateTimeTrack
+    {
+      bool started;
+      std::clock_t start_time;
     };
 
     struct StateMachineTimeTrack
@@ -34,6 +42,11 @@ namespace eVTOL_sim
       StateMachine();
       ~StateMachine() = default;
 
+      /// @brief Aircraft State Control.
+      void state_control();
+
+      /// TODO: Encapsulate the flow of time track in a function as its common across states.
+
       /// @brief Flight State.
       void flight_st();
       /// @brief Waiting for Charging.
@@ -42,9 +55,10 @@ namespace eVTOL_sim
       void charging_st();
       /// @brief Stop State.
       void stop_st();
-      
-      /// @brief Aircraft State Control.
-      void state_control();
+
+      /// @brief Check Charger Availability.
+      /// @return True if charger obtained.
+      bool check_charger_availability();
 
       /// @brief Command Stop.
       void stop_state_machine();
@@ -53,13 +67,18 @@ namespace eVTOL_sim
       /// @return Time tracking results.
       StateMachineTimeTrack get_time_track_results();
 
-      /// maximum time an aircraft can fly on one charge.
-      uint16_t max_time_per_flight_minutes_;   
+      uint16_t time_per_flight_minutes;   /// maximum time an aircraft can fly on one charge. 
+      uint16_t time_to_charge_minutes;    /// time to charge.
       
     private:
       AircraftState current_state_;         /// Current State of the Aircraft.
       bool stop_state_machine_;             /// State Machine End Flag.
-      StateMachineTimeTrack time_track_;    /// time tracking variables.
+      StateMachineTimeTrack time_track_;    /// time tracking variables.     
+
+      /// Instantaneous State Time Trackers.
+      StateTimeTrack flight_time_track_;    
+      StateTimeTrack charging_time_track_;
+      StateTimeTrack waiting_time_track_;
     };
 
   } // namespace state_machine
