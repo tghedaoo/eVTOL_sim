@@ -10,7 +10,8 @@ namespace eVTOL_sim
 {
   namespace aircraft
   {
-    void Aircraft::init_aircraft(AircraftParams &params,
+    void Aircraft::init_aircraft(uint8_t aircraft_id,
+                                 AircraftParams &params,
                                  AircraftType type, 
                                  state_machine::StateMachine &state_machine_obj,
                                  uint16_t max_time_per_flight_minutes)
@@ -26,6 +27,7 @@ namespace eVTOL_sim
       aircraft_type_ = type;
       // State Machine.
       state_machine_obj_ = state_machine_obj;
+      state_machine_obj_.aircraft_id = aircraft_id;
       state_machine_obj_.time_per_flight_minutes = max_time_per_flight_minutes;
       state_machine_obj_.time_to_charge_minutes = params.time_2_charge_minutes;
     }

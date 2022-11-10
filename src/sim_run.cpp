@@ -98,35 +98,40 @@ int main()
   eVTOL_sim::state_machine::StateMachine state_machine1;
   eVTOL_sim::aircraft::Aircraft aircraft1;
 
-  aircraft1.init_aircraft(param_list[0],
+  aircraft1.init_aircraft(0,
+                          param_list[0],
                           eVTOL_sim::aircraft::AircraftType::Alpha,
                           state_machine1,
                           max_flight_time_per_charge_minutes[0]);
 
   eVTOL_sim::state_machine::StateMachine state_machine2;
   eVTOL_sim::aircraft::Aircraft aircraft2;
-  aircraft2.init_aircraft(param_list[1],
+  aircraft2.init_aircraft(1,
+                          param_list[1],
                           eVTOL_sim::aircraft::AircraftType::Beta,
                           state_machine2,
                           max_flight_time_per_charge_minutes[1]);
 
   eVTOL_sim::state_machine::StateMachine state_machine3;
   eVTOL_sim::aircraft::Aircraft aircraft3;
-  aircraft3.init_aircraft(param_list[2],
+  aircraft3.init_aircraft(2, 
+                          param_list[2],
                           eVTOL_sim::aircraft::AircraftType::Charlie,
                           state_machine3,
                           max_flight_time_per_charge_minutes[2]);
 
   eVTOL_sim::state_machine::StateMachine state_machine4;
   eVTOL_sim::aircraft::Aircraft aircraft4;
-  aircraft4.init_aircraft(param_list[3],
+  aircraft4.init_aircraft(3,
+                          param_list[3],
                           eVTOL_sim::aircraft::AircraftType::Delta,
                           state_machine4,
                           max_flight_time_per_charge_minutes[3]);
 
   eVTOL_sim::state_machine::StateMachine state_machine5;
   eVTOL_sim::aircraft::Aircraft aircraft5;
-  aircraft5.init_aircraft(param_list[4],
+  aircraft5.init_aircraft(4,
+                          param_list[4],
                           eVTOL_sim::aircraft::AircraftType::Echo,
                           state_machine5,
                           max_flight_time_per_charge_minutes[4]);
@@ -145,11 +150,10 @@ int main()
   // Start simulator time tracking.
   // 180 sec - 3 minutes ~ 3 hours of simulation.
   // TODO: Explore timer interrupt setup to avoid busy wait.
-  // TODO: timing cleanups.
-  // 0.1 sec extra to let the states close and to accomdate roundups as the times are represented in uint16_t)
+  // TODO: timing cleanups. Times in uint16_t roundup to 1 less minute depending upon the time of thread termination.
   std::clock_t start;
   start = std::clock();
-  double sim_end_duration = 180.1;
+  double sim_end_duration = 180;
   while (((std::clock() - start) / (double)CLOCKS_PER_SEC) < sim_end_duration)
     ;
 

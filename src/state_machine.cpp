@@ -97,8 +97,9 @@ namespace eVTOL_sim
       }
 
       // Release the charger.
-      // TODO: Log which charging station is freed and by whom.
       obtained_charger_->unlock();
+      std::string id = std::to_string(aircraft_id);
+      std::cout << "Aircraft ID: [" << id << "] --- CHARGED." << std::endl;
 
       // Update total time of charging since beginning.
       time_track_.total_charging_time_minutes += charge_duration;
@@ -147,24 +148,24 @@ namespace eVTOL_sim
 
     bool StateMachine::check_charger_availability()
     {
-      // TODO: Log who is using the charging station.
+      std::string id = std::to_string(aircraft_id);
       if (charging_station_1.try_lock())
       {
-        std::cout << "charger 1" << std::endl;
+        std::cout << "Aircraft ID: [" << id << "] @ Charging Station [1]" << std::endl;
         obtained_charger_ = &charging_station_1;
         return true;
       }
 
       if (charging_station_2.try_lock())
       {
-        std::cout << "charger 2" << std::endl;
+        std::cout << "Aircraft ID: [" << id << "] @ Charging Station [2]" << std::endl;
         obtained_charger_ = &charging_station_2;
         return true;
       }
 
       if (charging_station_3.try_lock())
       {
-        std::cout << "charger 3" << std::endl;
+        std::cout << "Aircraft ID: [" << id << "] @ Charging Station [3]" << std::endl;
         obtained_charger_ = &charging_station_3;
         return true;
       }
