@@ -114,7 +114,7 @@ int main()
 
   eVTOL_sim::state_machine::StateMachine state_machine3;
   eVTOL_sim::aircraft::Aircraft aircraft3;
-  aircraft3.init_aircraft(2, 
+  aircraft3.init_aircraft(2,
                           param_list[2],
                           eVTOL_sim::aircraft::AircraftType::Charlie,
                           state_machine3,

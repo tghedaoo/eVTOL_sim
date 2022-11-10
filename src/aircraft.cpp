@@ -12,7 +12,7 @@ namespace eVTOL_sim
   {
     void Aircraft::init_aircraft(uint8_t aircraft_id,
                                  AircraftParams &params,
-                                 AircraftType type, 
+                                 AircraftType type,
                                  state_machine::StateMachine &state_machine_obj,
                                  uint16_t max_time_per_flight_minutes)
     {
@@ -56,9 +56,9 @@ namespace eVTOL_sim
       }
 
       // Get all results.
-      SimRes results = {0};  
+      SimRes results = {0};
       auto time_res = state_machine_obj_.get_time_track_results();
-      
+
       // Timings.
       results.avg_flight_time_minutes = time_res.total_flight_time_minutes;
       results.avg_time_charging_minutes = time_res.total_charging_time_minutes;
