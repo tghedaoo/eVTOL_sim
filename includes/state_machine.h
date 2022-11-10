@@ -49,14 +49,14 @@ namespace eVTOL_sim
 
       /// @brief Flight State.
       void flight_st();
-      /// @brief Waiting for Charging.
-      void awaiting_charger_st();
       /// @brief Charging State.
       void charging_st();
+      /// @brief Waiting for Charging.
+      void awaiting_charger_st();
       /// @brief Stop State.
       void stop_st();
 
-      /// @brief Check Charger Availability.
+      /// @brief Check Charger Availability and take a note of it.
       /// @return True if charger obtained.
       bool check_charger_availability();
 
@@ -67,16 +67,20 @@ namespace eVTOL_sim
       /// @return Time tracking results.
       StateMachineTimeTrack get_time_track_results();
 
-      uint16_t time_per_flight_minutes;   /// maximum time an aircraft can fly on one charge. 
-      uint16_t time_to_charge_minutes;    /// time to charge.
-      
-    private:
-      AircraftState current_state_;         /// Current State of the Aircraft.
-      bool stop_state_machine_;             /// State Machine End Flag.
-      StateMachineTimeTrack time_track_;    /// time tracking variables.     
+      uint16_t time_per_flight_minutes; /// maximum time an aircraft can fly on one charge.
+      uint16_t time_to_charge_minutes;  /// time to charge.
 
+    private:
+      AircraftState current_state_; /// Current State of the Aircraft.
+      bool stop_state_machine_;     /// State Machine End Flag.
+
+      /// Tracking the charger obtained by the aircraft.
+      std::mutex *obtained_charger_;
+
+      /// Total time per state.
+      StateMachineTimeTrack time_track_;
       /// Instantaneous State Time Trackers.
-      StateTimeTrack flight_time_track_;    
+      StateTimeTrack flight_time_track_;
       StateTimeTrack charging_time_track_;
       StateTimeTrack waiting_time_track_;
     };

@@ -14,11 +14,6 @@ The aircraft uses a state machine to track its states and timings.
 #include <vector>
 #include <cstdlib>
 
-// This is a global resource to sync the aircraft state machine threads.
-std::mutex charging_station_1;
-std::mutex charging_station_2;
-std::mutex charging_station_3;
-
 // TODO: add this function as a part of the util class.
 // Aircraft Parameters
 std::vector<eVTOL_sim::aircraft::AircraftParams> get_aircraft_params()

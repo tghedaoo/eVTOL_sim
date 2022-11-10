@@ -4,12 +4,24 @@ State Machine Class Implementation.
 
 #include "../includes/state_machine.h"
 
+// This is a global resource to sync the aircraft state machine threads.
+std::mutex charging_station_1;
+std::mutex charging_station_2;
+std::mutex charging_station_3;
+
 namespace eVTOL_sim
 {
   namespace state_machine
   {
     // Initializing state tio flight as per the problem statement.
-    StateMachine::StateMachine() : current_state_(AircraftState::flight), stop_state_machine_(false), time_track_({0})
+    StateMachine::StateMachine()
+        : current_state_(AircraftState::flight),
+          stop_state_machine_(false),
+          obtained_charger_(nullptr),
+          time_track_({0}),
+          flight_time_track_({0}),
+          charging_time_track_({0}),
+          waiting_time_track_({0})
     {
     }
 
@@ -68,6 +80,33 @@ namespace eVTOL_sim
       flight_time_track_.started = false;
     }
 
+    void StateMachine::charging_st()
+    {
+      // Check if already charging.
+      if (!charging_time_track_.started)
+      {
+        charging_time_track_.start_time = std::clock();
+        charging_time_track_.started = true;
+      }
+
+      // Track for flight time.
+      double charge_duration = time_to_charge_minutes; // Max duration for full charge.
+      if (((std::clock() - charging_time_track_.start_time) / (double)CLOCKS_PER_SEC) < charge_duration)
+      {
+        return;
+      }
+
+      // Release the charger.
+      obtained_charger_->unlock();
+
+      // Update total time of charging since beginning.
+      time_track_.total_charging_time_minutes += charge_duration;
+
+      // end current tracking.
+      charging_time_track_.started = false;
+      current_state_ = AircraftState::flight;
+    }
+
     void StateMachine::awaiting_charger_st()
     {
       // Check if already waiting.
@@ -86,55 +125,49 @@ namespace eVTOL_sim
         time_track_.total_wait_time_minutes += waiting_duration;
         waiting_time_track_.started = false;
       }
-
-    }
-
-    void StateMachine::charging_st()
-    {      
-      // Check if already charging.
-      if (!charging_time_track_.started)
-      {
-        charging_time_track_.start_time = std::clock();
-        charging_time_track_.started = true;
-      }
-
-      // Track for flight time.
-      double charge_duration = time_to_charge_minutes; // Max duration for full charge.
-      if (((std::clock() - charging_time_track_.start_time) / (double)CLOCKS_PER_SEC) < charge_duration)
-      {
-        return;
-      }
-      
-      // Update total time of charging since beginning.
-      time_track_.total_charging_time_minutes += charge_duration;
-
-      // TODO: release obtained charger.
-
-      // end current tracking.
-      charging_time_track_.started = false;
-      current_state_ = AircraftState::flight;
     }
 
     void StateMachine::stop_st()
     {
       // check current state and complete time tracking.
-      switch(current_state_)
+      switch (current_state_)
       {
-        case AircraftState::flight:
-          time_track_.total_flight_time_minutes += ((std::clock() - flight_time_track_.start_time) / (double)CLOCKS_PER_SEC);
-          break;
-        case AircraftState::charging:
-          time_track_.total_charging_time_minutes += ((std::clock() - charging_time_track_.start_time) / (double)CLOCKS_PER_SEC);
-          break;
-        case AircraftState::awaiting_charger:
-          time_track_.total_wait_time_minutes += ((std::clock() - waiting_time_track_.start_time) / (double)CLOCKS_PER_SEC);
-          break;
+      case AircraftState::flight:
+        time_track_.total_flight_time_minutes += ((std::clock() - flight_time_track_.start_time) / (double)CLOCKS_PER_SEC);
+        break;
+      case AircraftState::charging:
+        time_track_.total_charging_time_minutes += ((std::clock() - charging_time_track_.start_time) / (double)CLOCKS_PER_SEC);
+        break;
+      case AircraftState::awaiting_charger:
+        time_track_.total_wait_time_minutes += ((std::clock() - waiting_time_track_.start_time) / (double)CLOCKS_PER_SEC);
+        break;
       }
     }
 
     bool StateMachine::check_charger_availability()
     {
-      return true;
+      if (charging_station_1.try_lock())
+      {
+        std::cout << "charger 1" << std::endl;
+        obtained_charger_ = &charging_station_1;
+        return true;
+      }
+
+      if (charging_station_2.try_lock())
+      {
+        std::cout << "charger 2" << std::endl;
+        obtained_charger_ = &charging_station_2;
+        return true;
+      }
+
+      if (charging_station_3.try_lock())
+      {
+        std::cout << "charger 3" << std::endl;
+        obtained_charger_ = &charging_station_3;
+        return true;
+      }
+
+      return false;
     }
 
     void StateMachine::stop_state_machine()
